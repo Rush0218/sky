@@ -1,12 +1,9 @@
 var button = document.querySelector(".search-btn"); 
 var apiKey = "2fe3148386e179649114eb803859fdb2";
 
-
-
-
 //create function to fetch current weather conditions for searched locations.
 function getWeather(location) {
-    var queryUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=imperial&appid=" + apiKey;
+    var queryUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=imperial&appid=" + apiKey;
     fetch(queryUrl).then(function(response) {
        return response.json(); 
     }).then(function(data) {
@@ -38,8 +35,6 @@ function displayWeather(data) {
     listItem.textContent = localStorage.getItem("history"); 
     list.appendChild(listItem); 
     history.setAttribute("style", "display: block"); 
-    
-
     getForecast(lat, lon); 
 };
 
@@ -155,7 +150,5 @@ function displayForecast(data) {
 function search() {
     getWeather(document.querySelector(".search-info").value); 
 }; 
-
-
 
 button.addEventListener("click", search);
