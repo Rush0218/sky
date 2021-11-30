@@ -2,17 +2,21 @@ var button = document.querySelector(".search-btn");
 var apiKey = "2fe3148386e179649114eb803859fdb2";
 
 //create function to fetch current weather conditions for searched locations.
-function getWeather(location) {
+
+// getWeather now takes an additional optional parameter doHistory which defaults to false
+function getWeather(location, doHistory=false) {
     var queryUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=imperial&appid=" + apiKey;
     fetch(queryUrl).then(function(response) {
        return response.json(); 
     }).then(function(data) {
-        displayWeather(data);  
+        // doHistory is passed to displayWeather
+        displayWeather(data, doHistory);  
     })
 }; 
 
 //create function to display certain information on the main container
-function displayWeather(data) {
+// displayWeather takes doHistory parameter
+function displayWeather(data, doHistory) {
     var { name } = data; 
     var { lat, lon } = data.coord;
     var { icon, description } = data.weather[0]; 
@@ -26,15 +30,20 @@ function displayWeather(data) {
     document.querySelector(".wind").textContent = "wind: " + speed + "kmh";
     
     //set each search item in locasl storage
-    var history = document.querySelector(".search-history");
-    var list = document.querySelector(".search-list");
-    var listItem = document.createElement("button");
+    if(doHistory === false){
+        var history = document.querySelector(".search-history");
+        var list = document.querySelector(".search-list");
+        var listItem = document.createElement("button");
 
-    localStorage.setItem("history", name); 
-    listItem.className = "search-again"
-    listItem.textContent = localStorage.getItem("history"); 
-    list.appendChild(listItem); 
-    history.setAttribute("style", "display: block"); 
+        localStorage.setItem("history", name); 
+        listItem.className = "search-again"
+        listItem.textContent = localStorage.getItem("history"); 
+        list.appendChild(listItem); 
+        history.setAttribute("style", "display: block");
+        listItem.addEventListener("click", function(){
+            getWeather(name, true); 
+        });
+    }
     getForecast(lat, lon); 
 };
 
@@ -48,7 +57,6 @@ function getForecast(lat, lon) {
         displayForecast(data); 
     })
 }; 
-
 
 //created a function to display the daily forecast data into the card container
 function displayForecast(data) {
